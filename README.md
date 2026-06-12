@@ -40,11 +40,53 @@ JobFlow is a modern, production-ready Job Application Tracker inspired by Notion
 
 ## Docker Deployment
 
+### Local Development with Docker
+
 To spin up the entire application stack (Frontend, Backend, and PostgreSQL database) using Docker:
 
 ```bash
 docker compose up -d --build
 ```
+
+This will start:
+- Frontend: http://localhost
+- Backend: http://localhost:5001
+- PostgreSQL: localhost:5432
+
+### Docker Deployment to Render
+
+You can also deploy using Docker on Render:
+
+#### 1. Deploy PostgreSQL Database
+Follow the same steps as in the Render Deployment section above.
+
+#### 2. Deploy Backend as Docker Service
+1. Click "New +" → "Web Service"
+2. Connect your GitHub repository
+3. **Build & Deploy Settings:**
+   - Name: `jobflow-backend`
+   - Region: Oregon (same as database)
+   - Branch: `main`
+   - Runtime: `Docker`
+   - Docker Context: `/backend`
+   - Dockerfile Path: `Dockerfile`
+4. **Environment Variables:**
+   - Same as manual deployment (see Render Deployment section)
+5. Click "Create Web Service"
+
+#### 3. Deploy Frontend as Docker Service
+1. Click "New +" → "Web Service"
+2. Connect your GitHub repository
+3. **Build & Deploy Settings:**
+   - Name: `jobflow-frontend`
+   - Region: Oregon (same as backend)
+   - Branch: `main`
+   - Runtime: `Docker`
+   - Docker Context: `/frontend`
+   - Dockerfile Path: `Dockerfile`
+4. **Environment Variables:**
+   - `VITE_API_URL`: (your backend URL)
+5. Click "Create Web Service"
 
 ## Render Deployment
 
