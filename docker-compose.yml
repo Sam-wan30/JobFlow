@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: jobflow-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: jobflow
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  backend:
+    build: ./backend
+    container_name: jobflow-backend
+    ports:
+      - "5001:5000"
+    environment:
+      PORT: 5000
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/jobflow?schema=public
+      JWT_SECRET: supersecretkey123_jobflow_production_secret
+      JWT_REFRESH_SECRET: supersecretrefreshkey123_jobflow_production_secret
+      FRONTEND_URL: http://localhost
+      GOOGLE_CALLBACK_URL: http://localhost:5001/api/auth/google/callback
+    depends_on:
+      - postgres
+    restart: always
+
+  frontend:
+    build: ./frontend
+    container_name: jobflow-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  pgdata:

@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  password       String?
+  name           String?
+  googleId       String?          @unique
+  avatar         String?
+  provider       String?          @default("email")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  jobApplications JobApplication[]
+  notifications  Notification[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  type      String   // interview_reminder, deadline_reminder, status_update, activity
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model JobApplication {
+  id              String      @id @default(uuid())
+  companyName     String
+  role            String
+  location        String?
+  salary          String?
+  jobUrl          String?
+  applicationDate DateTime    @default(now())
+  status          String      // Applied, Under_Review, OA_Scheduled, Interview_Scheduled, Final_Round, Offer_Received, Rejected
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes           Note[]
+  interviews      Interview[]
+  activities      Activity[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model Interview {
+  id               String         @id @default(uuid())
+  interviewDate    DateTime
+  interviewTime    String?
+  interviewerName  String?
+  meetingLink      String?
+  interviewNotes   String?
+  jobApplicationId String
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Note {
+  id               String         @id @default(uuid())
+  type             String         // personal, research, preparation
+  content          String
+  jobApplicationId String
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Activity {
+  id               String         @id @default(uuid())
+  type             String         // Application_Created, Resume_Submitted, OA_Received, Interview_Scheduled, Interview_Completed, Offer_Received, Rejected
+  description      String?
+  jobApplicationId String
+  jobApplication   JobApplication @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+}
