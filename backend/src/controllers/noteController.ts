@@ -9,7 +9,7 @@ export const createNote = async (req: AuthRequest, res: Response): Promise<any> 
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { jobApplicationId, type, content } = req.body;
+    const { jobApplicationId, type, content } = req.body as any;
 
     if (!jobApplicationId || !type || !content) {
       return res.status(400).json({ message: 'Job application ID, type, and content are required' });
@@ -56,7 +56,7 @@ export const updateNote = async (req: AuthRequest, res: Response): Promise<any> 
       return res.status(403).json({ message: 'Unauthorized access to note' });
     }
 
-    const { type, content } = req.body;
+    const { type, content } = req.body as any;
 
     const updatedNote = await prisma.note.update({
       where: { id },

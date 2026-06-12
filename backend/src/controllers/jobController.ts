@@ -10,7 +10,7 @@ export const createJob = async (req: AuthRequest, res: Response): Promise<any> =
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { companyName, role, location, salary, jobUrl, applicationDate, status } = req.body;
+    const { companyName, role, location, salary, jobUrl, applicationDate, status } = req.body as any;
 
     if (!companyName || !role || !status) {
       return res.status(400).json({ message: 'Company name, role, and status are required' });
@@ -46,7 +46,7 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<any> => 
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { search, status, location } = req.query;
+    const { search, status, location } = req.query as any;
 
     const whereClause: any = { userId };
 
@@ -157,7 +157,7 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<any> =
       return res.status(403).json({ message: 'Forbidden' });
     }
 
-    const { companyName, role, location, salary, jobUrl, applicationDate, status } = req.body;
+    const { companyName, role, location, salary, jobUrl, applicationDate, status } = req.body as any;
 
     const updatedJob = await prisma.jobApplication.update({
       where: { id },

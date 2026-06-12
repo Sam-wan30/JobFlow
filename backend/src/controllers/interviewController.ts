@@ -9,7 +9,7 @@ export const scheduleInterview = async (req: AuthRequest, res: Response): Promis
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { jobApplicationId, interviewDate, interviewTime, interviewerName, meetingLink, interviewNotes } = req.body;
+    const { jobApplicationId, interviewDate, interviewTime, interviewerName, meetingLink, interviewNotes } = req.body as any;
 
     if (!jobApplicationId || !interviewDate) {
       return res.status(400).json({ message: 'Job application ID and interview date are required' });
@@ -59,7 +59,7 @@ export const updateInterview = async (req: AuthRequest, res: Response): Promise<
       return res.status(403).json({ message: 'Unauthorized access to interview' });
     }
 
-    const { interviewDate, interviewTime, interviewerName, meetingLink, interviewNotes } = req.body;
+    const { interviewDate, interviewTime, interviewerName, meetingLink, interviewNotes } = req.body as any;
 
     const updatedInterview = await prisma.interview.update({
       where: { id },
