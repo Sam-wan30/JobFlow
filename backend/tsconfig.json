@@ -3,7 +3,7 @@
     "target": "es2022",
     "module": "commonjs",
     "lib": ["es2022"],
-    "types": ["node", "express"],
+    "types": ["node"],
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
