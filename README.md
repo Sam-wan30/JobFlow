@@ -48,7 +48,7 @@ docker compose up -d --build
 
 ## Render Deployment
 
-This project is configured for easy deployment on Render using the provided `render.yaml` file.
+This project is configured for deployment on Render. Follow these manual steps to deploy.
 
 ### Prerequisites
 
@@ -58,59 +58,107 @@ This project is configured for easy deployment on Render using the provided `ren
 
 ### Step-by-Step Deployment
 
-1. **Push your code to GitHub**
-   - Ensure your repository is public or connected to Render
+#### 1. Deploy PostgreSQL Database
 
-2. **Create a new Web Service on Render**
-   - Go to [dashboard.render.com](https://dashboard.render.com)
-   - Click "New +" → "Web Service"
-   - Connect your GitHub repository
-   - **Important:** Select "Existing render.yaml" when prompted
-   - Render will automatically detect and use the `render.yaml` configuration
+1. Go to [dashboard.render.com](https://dashboard.render.com)
+2. Click "New +" → "PostgreSQL"
+3. Name: `jobflow-db`
+4. Database: `jobflow`
+5. User: `jobflow_user`
+6. Region: Oregon (or closest to you)
+7. Plan: Free
+8. Click "Create Database"
 
-3. **Configure Environment Variables**
-   Render will automatically set most variables via `render.yaml`, but you need to manually add:
+#### 2. Deploy Backend Service
 
-   **Required for Google OAuth:**
-   - `GOOGLE_CLIENT_ID`: Your Google OAuth client ID
-   - `GOOGLE_CLIENT_SECRET`: Your Google OAuth client secret
+1. Click "New +" → "Web Service"
+2. Connect your GitHub repository
+3. **Build & Deploy Settings:**
+   - Name: `jobflow-backend`
+   - Region: Oregon (same as database)
+   - Branch: `main`
+   - Runtime: `Node`
+   - Build Command: `cd backend && npm install && npm run build`
+   - Start Command: `cd backend && npm start`
+4. **Environment Variables:**
+   - `NODE_ENV`: `production`
+   - `PORT`: `10000`
+   - `DATABASE_URL`: (get from PostgreSQL database dashboard)
+   - `JWT_SECRET`: (generate a secure random string)
+   - `JWT_REFRESH_SECRET`: (generate a different secure random string)
+   - `FRONTEND_URL`: (leave empty for now, will update after frontend deployment)
+   - `GOOGLE_CALLBACK_URL`: (leave empty for now, will update after deployment)
+   - `GOOGLE_CLIENT_ID`: (your Google OAuth client ID)
+   - `GOOGLE_CLIENT_SECRET`: (your Google OAuth client secret)
+   - `EMAIL_SERVICE`: `gmail`
+   - `EMAIL_USER`: (your Gmail address)
+   - `EMAIL_PASSWORD`: (your Gmail App Password)
+   - `EMAIL_FROM`: `JobFlow <noreply@jobflow.com>`
+5. Click "Create Web Service"
+6. Wait for deployment to complete
+7. Copy the backend URL (e.g., `https://jobflow-backend.onrender.com`)
 
-   **Required for Email Notifications:**
-   - `EMAIL_SERVICE`: Set to "gmail"
-   - `EMAIL_USER`: Your Gmail address
-   - `EMAIL_PASSWORD`: Your Gmail App Password (not your regular password)
-   - `EMAIL_FROM`: Sender email (e.g., "JobFlow <noreply@jobflow.com>")
+#### 3. Deploy Frontend Service
 
-4. **Deploy**
-   - Click "Create Web Service"
-   - Render will automatically:
-     - Create a PostgreSQL database
-     - Build and deploy the backend
-     - Build and deploy the frontend
-     - Configure environment variables
-     - Set up service-to-service communication
+1. Click "New +" → "Web Service"
+2. Connect your GitHub repository
+3. **Build & Deploy Settings:**
+   - Name: `jobflow-frontend`
+   - Region: Oregon (same as backend)
+   - Branch: `main`
+   - Runtime: `Static`
+   - Build Command: `cd frontend && npm install && npm run build`
+   - Publish Directory: `frontend/dist`
+4. **Environment Variables:**
+   - `VITE_API_URL`: (paste your backend URL from step 2)
+5. Click "Create Web Service"
+6. Wait for deployment to complete
+7. Copy the frontend URL (e.g., `https://jobflow-frontend.onrender.com`)
 
-5. **Update Google OAuth Redirect URI**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
-   - Find your OAuth 2.0 client
-   - Add your Render backend URL to "Authorized redirect URIs":
-     - Format: `https://your-backend-url.onrender.com/api/auth/google/callback`
+#### 4. Update Backend Environment Variables
 
-6. **Run Database Migrations**
-   - After the backend is deployed, access the Render shell:
-     - Go to your backend service → "Shell" tab
-     - Run: `npx prisma db push`
+1. Go to your backend service in Render
+2. Click "Environment" tab
+3. Update these variables:
+   - `FRONTEND_URL`: (paste your frontend URL from step 3)
+   - `GOOGLE_CALLBACK_URL`: (paste your backend URL + `/api/auth/google/callback`)
+4. Click "Save Changes"
+5. Click "Manual Deploy" → "Clear build cache & deploy"
+
+#### 5. Update Google OAuth Redirect URI
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+2. Find your OAuth 2.0 client
+3. Add your backend URL to "Authorized redirect URIs":
+   - Format: `https://your-backend-url.onrender.com/api/auth/google/callback`
+4. Save changes
+
+#### 6. Run Database Migrations
+
+1. Go to your backend service in Render
+2. Click "Shell" tab
+3. Run: `cd backend && npx prisma db push`
+4. Wait for migrations to complete
 
 ### Environment Variables Reference
 
-The following environment variables are automatically configured by `render.yaml`:
+**Backend Environment Variables:**
+- `NODE_ENV`: Set to `production`
+- `PORT`: Set to `10000` (or your preferred port)
+- `DATABASE_URL`: PostgreSQL connection string from Render database
+- `JWT_SECRET`: Secure random string for JWT tokens
+- `JWT_REFRESH_SECRET`: Secure random string for refresh tokens
+- `FRONTEND_URL`: Your frontend service URL
+- `GOOGLE_CALLBACK_URL`: Your backend URL + `/api/auth/google/callback`
+- `GOOGLE_CLIENT_ID`: Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
+- `EMAIL_SERVICE`: Set to `gmail`
+- `EMAIL_USER`: Your Gmail address
+- `EMAIL_PASSWORD`: Gmail App Password
+- `EMAIL_FROM`: Sender email address
 
-- `DATABASE_URL`: PostgreSQL connection string (auto-generated)
-- `JWT_SECRET`: JWT secret key (auto-generated)
-- `JWT_REFRESH_SECRET`: JWT refresh secret key (auto-generated)
-- `FRONTEND_URL`: Frontend service URL (auto-configured)
-- `GOOGLE_CALLBACK_URL`: Google OAuth callback URL (auto-configured)
-- `VITE_API_URL`: Backend API URL for frontend (auto-configured)
+**Frontend Environment Variables:**
+- `VITE_API_URL`: Your backend service URL
 
 ### Build & Start Commands
 
@@ -120,7 +168,7 @@ The following environment variables are automatically configured by `render.yaml
 
 **Frontend:**
 - Build Command: `cd frontend && npm install && npm run build`
-- Publish Path: `frontend/dist`
+- Publish Directory: `frontend/dist`
 
 ### Troubleshooting
 
