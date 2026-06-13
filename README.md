@@ -35,7 +35,6 @@
 - [Security Features](#-security-features)
 - [Performance & Scalability](#-performance--scalability)
 - [Future Roadmap](#-future-roadmap)
-- [Resume Impact](#-resume-impact)
 - [Author](#-author)
 - [License](#-license)
 
