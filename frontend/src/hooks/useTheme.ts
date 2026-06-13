@@ -7,10 +7,6 @@ const THEME_EVENT = 'jobflow-theme-change';
 
 const getPreferredTheme = (): Theme => {
   if (typeof window === 'undefined') return 'light';
-
-  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme;
-
   return 'light';
 };
 
