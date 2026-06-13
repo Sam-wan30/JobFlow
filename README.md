@@ -668,8 +668,7 @@ This project demonstrates the following software engineering skills:
 **Samiksha**
 
 - **GitHub**: [Sam-wan30](https://github.com/Sam-wan30)
-- **LinkedIn**: [Samiksha](https://linkedin.com/in/samiksha)
-- **Portfolio**: [samiksha.dev](https://samiksha.dev)
+- **LinkedIn**: [Samiksha](https://www.linkedin.com/in/samikshawanjari30/)
 - **Email**: samistudies30@gmail.com
 
 ---
