@@ -615,7 +615,7 @@ This starts:
 
 ---
 
-## 💼 Resume Impact
+## 💼 Core Software Engineering Skills
 
 This project demonstrates the following software engineering skills:
 
