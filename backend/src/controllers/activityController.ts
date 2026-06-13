@@ -1,6 +1,5 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { prisma } from '../db';
-import { AuthRequest } from '../middleware/authMiddleware';
 
 export const createActivity = async (jobApplicationId: string, type: string, description?: string) => {
   try {
@@ -18,7 +17,7 @@ export const createActivity = async (jobApplicationId: string, type: string, des
   }
 };
 
-export const getActivitiesByJob = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getActivitiesByJob = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const jobApplicationId = req.params.id as string;

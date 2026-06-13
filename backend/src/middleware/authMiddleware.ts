@@ -2,14 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { jwtSecret } from '../config/env';
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-  };
-}
-
-export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction): any => {
+export const authenticateToken = (req: Request, res: Response, next: NextFunction): any => {
   const authHeader = (req.headers as any)['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -21,7 +14,7 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     if (err) {
       return res.status(403).json({ message: 'Invalid or expired access token' });
     }
-    req.user = decoded as { id: string; email: string };
+    (req as any).user = decoded as { id: string; email: string };
     next();
   });
 };

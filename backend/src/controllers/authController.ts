@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../db';
-import { AuthRequest } from '../middleware/authMiddleware';
 import { sendWelcomeEmail } from '../services/emailService';
 import { isProduction, jwtRefreshSecret, jwtSecret, primaryFrontendUrl } from '../config/env';
 
@@ -177,7 +176,7 @@ export const refresh = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-export const getMe = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getMe = async (req: Request, res: Response): Promise<any> => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: 'Unauthorized' });
@@ -240,7 +239,7 @@ export const googleAuthFailed = async (req: Request, res: Response): Promise<any
   return res.redirect(`${primaryFrontendUrl}/login?error=google_auth_failed`);
 };
 
-export const updateAvatar = async (req: AuthRequest, res: Response): Promise<any> => {
+export const updateAvatar = async (req: Request, res: Response): Promise<any> => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: 'Unauthorized' });

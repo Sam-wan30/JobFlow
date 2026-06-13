@@ -1,9 +1,8 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { prisma } from '../db';
-import { AuthRequest } from '../middleware/authMiddleware';
 import { createActivity } from './activityController';
 
-export const createJob = async (req: AuthRequest, res: Response): Promise<any> => {
+export const createJob = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -39,7 +38,7 @@ export const createJob = async (req: AuthRequest, res: Response): Promise<any> =
   }
 };
 
-export const getJobs = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getJobs = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -96,7 +95,7 @@ export const getJobs = async (req: AuthRequest, res: Response): Promise<any> => 
   }
 };
 
-export const getJobById = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getJobById = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -136,7 +135,7 @@ export const getJobById = async (req: AuthRequest, res: Response): Promise<any> 
   }
 };
 
-export const updateJob = async (req: AuthRequest, res: Response): Promise<any> => {
+export const updateJob = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -179,7 +178,7 @@ export const updateJob = async (req: AuthRequest, res: Response): Promise<any> =
   }
 };
 
-export const deleteJob = async (req: AuthRequest, res: Response): Promise<any> => {
+export const deleteJob = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -211,7 +210,7 @@ export const deleteJob = async (req: AuthRequest, res: Response): Promise<any> =
   }
 };
 
-export const getDashboardStats = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getDashboardStats = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {

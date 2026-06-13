@@ -1,8 +1,7 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { prisma } from '../db';
-import { AuthRequest } from '../middleware/authMiddleware';
 
-export const createNote = async (req: AuthRequest, res: Response): Promise<any> => {
+export const createNote = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -38,7 +37,7 @@ export const createNote = async (req: AuthRequest, res: Response): Promise<any> 
   }
 };
 
-export const updateNote = async (req: AuthRequest, res: Response): Promise<any> => {
+export const updateNote = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -73,7 +72,7 @@ export const updateNote = async (req: AuthRequest, res: Response): Promise<any> 
   }
 };
 
-export const deleteNote = async (req: AuthRequest, res: Response): Promise<any> => {
+export const deleteNote = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;

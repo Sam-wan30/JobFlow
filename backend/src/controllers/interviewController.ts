@@ -1,8 +1,7 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { prisma } from '../db';
-import { AuthRequest } from '../middleware/authMiddleware';
 
-export const scheduleInterview = async (req: AuthRequest, res: Response): Promise<any> => {
+export const scheduleInterview = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -41,7 +40,7 @@ export const scheduleInterview = async (req: AuthRequest, res: Response): Promis
   }
 };
 
-export const updateInterview = async (req: AuthRequest, res: Response): Promise<any> => {
+export const updateInterview = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -79,7 +78,7 @@ export const updateInterview = async (req: AuthRequest, res: Response): Promise<
   }
 };
 
-export const deleteInterview = async (req: AuthRequest, res: Response): Promise<any> => {
+export const deleteInterview = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     const id = req.params.id as string;
@@ -108,7 +107,7 @@ export const deleteInterview = async (req: AuthRequest, res: Response): Promise<
   }
 };
 
-export const getInterviews = async (req: AuthRequest, res: Response): Promise<any> => {
+export const getInterviews = async (req: Request, res: Response): Promise<any> => {
   try {
     const userId = req.user?.id;
     if (!userId) {
